@@ -38,7 +38,7 @@ def plot9imagesfromtfdataset(image_ds, class_names):
     fig.savefig('./outputs/9images.png')
 
 
-def plot_history(history, metric, val_metric, path='./outputs/traininghistory.pdf'):
+def plot_history(history, metric, val_metric, path='./outputs'):
     acc = history.history[metric]
     val_acc = history.history[val_metric]
 
@@ -62,6 +62,6 @@ def plot_history(history, metric, val_metric, path='./outputs/traininghistory.pd
     plt.legend(loc='upper right')
     plt.grid(True)
     plt.title('Training and Validation Loss')
-    plt.show()
     print(path)
-    fig.savefig(path+'/traininghistory.pdf')#'./outputs/traininghistory.pdf')
+    fig.savefig(path+"/traininghistory.pdf") #'./outputs/traininghistory.pdf')
+    plt.show()

@@ -19,15 +19,15 @@ model = None
 parser = configargparse.ArgParser(description='myTFDistributedClassify')
 parser.add_argument('--data_name', type=str, default='flower',
                     help='data name: mnist, fashionMNIST, flower')
-parser.add_argument('--data_type', default='customtfrecordfile', choices=['tfds', 'kerasdataset', 'imagefolder', 'customtfrecordfile'],
+parser.add_argument('--data_type', default='imagefolder', choices=['tfds', 'kerasdataset', 'imagefolder', 'customtfrecordfile'],
                     help='the type of data')  # gs://cmpelkk_imagetest/*.tfrec
-parser.add_argument('--data_path', type=str, default='/home/lkk/Developer/MyRepo/MultiModalClassifier/outputs/TFrecord',
+parser.add_argument('--data_path', type=str, default='/Users/daijunq/.keras/datasets/flower_photos',
                     help='path to get data') #'/home/lkk/.keras/datasets/flower_photos'
 parser.add_argument('--img_height', type=int, default=180,
                     help='resize to img height')
 parser.add_argument('--img_width', type=int, default=180,
                     help='resize to img width')
-parser.add_argument('--save_path', type=str, default='./outputs/',
+parser.add_argument('--save_path', type=str, default='./outputs',
                     help='path to save the model')
 # network
 parser.add_argument('--model_name', default='xceptionmodel1', choices=['cnnsimple1', 'cnnsimple2', 'cnnsimple3', 'cnnsimple4','mobilenetmodel1', 'xceptionmodel1'],
@@ -38,7 +38,7 @@ parser.add_argument('--learningratename', default='warmupexpdecay', choices=['fi
                     help='path to save the model')
 parser.add_argument('--batchsize', type=int, default=32,
                     help='batch size')
-parser.add_argument('--epochs', type=int, default=15,
+parser.add_argument('--epochs', type=int, default=8,
                     help='epochs')
 parser.add_argument('--GPU', type=bool, default=True,
                     help='use GPU')
@@ -63,7 +63,7 @@ def main():
     print("Keras Version: ", tf.keras.__version__)
 
     TAG="0712"
-    args.save_path=args.save_path+args.data_name+'_'+args.model_name+'_'+TAG
+    args.save_path=args.save_path+'/'+args.data_name+'_'+args.model_name+'_'+TAG
     print("Output path:", args.save_path)
 
     # mixed precision
@@ -104,7 +104,7 @@ def main():
 
     print("Number of accelerators: ", strategy.num_replicas_in_sync)
     BUFFER_SIZE = 10000
-    BATCH_SIZE_PER_REPLICA = args.batchsize #64
+    BATCH_SIZE_PER_REPLICA = args.batchsize #32
     BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
 
     #train_ds, val_ds, class_names, imageshape = loadTFdataset(args.data_name, args.data_type)
@@ -112,7 +112,6 @@ def main():
     #train_ds, test_data, num_train_examples, num_test_examples, class_names=loadimagefolderdataset('flower')
     #train_data, test_data, num_train_examples, num_test_examples =loadkerasdataset('cifar10')
     #train_data, test_data, num_train_examples, num_test_examples = loadtfds(args.tfds_dataname)
-
     # train_data, test_data, num_train_examples, num_test_examples = loadtfds(
     #     args.tfds_dataname)
 

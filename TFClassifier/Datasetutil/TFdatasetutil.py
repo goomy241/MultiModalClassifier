@@ -13,7 +13,7 @@ BATCH_SIZE = 32
 IMG_height = 180
 IMG_width = 180
 
-def loadTFdataset(name, type, path='/home/lkk/.keras/datasets/flower_photos', img_height=180, img_width=180, batch_size=32):
+def loadTFdataset(name, type, path='/Users/daijunq/.keras/datasets/flower_photos', img_height=180, img_width=180, batch_size=32):
     global BATCH_SIZE
     BATCH_SIZE=batch_size
     global IMG_height, IMG_width
@@ -43,7 +43,7 @@ def loadtfds(name='mnist'):
 
     #use the TFDS API to visualize how our images look like
     fig = tfds.show_examples(train, info)
-    fig.savefig('./outputs/tfdsvis.png')
+    fig.savefig('/Users/daijunq/Desktop/dee/github/MultiModalClassifier/outputs/tfdsvis.png')
 
     ds = train.take(1)#https://www.tensorflow.org/datasets/overview#installation
     for image, label in tfds.as_numpy(ds):
@@ -149,7 +149,7 @@ def random_crop(images, labels):
 
 
 #/home/lkk/.keras/datasets/cats_and_dogs_filtered, /home/lkk/.keras/datasets/flower_photos
-def loadimagefolderdataset(name, imagefolderpath='~/.keras/datasets/flower_photos', imageformat='jpg', img_height=180, img_width=180, batch_size=32):
+def loadimagefolderdataset(name, imagefolderpath='/Users/daijunq/.keras/datasets/flower_photos', imageformat='jpg', img_height=180, img_width=180, batch_size=32):
     import pathlib
     data_dir = pathlib.Path(imagefolderpath)
     if imageformat=='jpg' or imageformat=='png':
@@ -209,7 +209,7 @@ def loadimagefolderdataset(name, imagefolderpath='~/.keras/datasets/flower_photo
     plot9imagesfromtfdataset(train_ds, class_names)
     return train_ds, val_ds, class_names, imageshape
 
-def loadimagetrainvalfolderdataset(name, trainpath='/home/lkk/.keras/datasets/cats_and_dogs_filtered/train', valpath='/home/lkk/.keras/datasets/cats_and_dogs_filtered/validation', imageformat='jpg', img_height=180, img_width=180, batch_size=32):
+def loadimagetrainvalfolderdataset(name, trainpath='/Users/daijunq/.keras/datasets/cats_and_dogs_filtered/train', valpath='/Users/daijunq/.keras/datasets/cats_and_dogs_filtered/validation', imageformat='jpg', img_height=180, img_width=180, batch_size=32):
     import pathlib
     train_dir = pathlib.Path(trainpath)
     val_dir = pathlib.Path(valpath)

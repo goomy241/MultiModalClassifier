@@ -4,6 +4,7 @@ import argparse
 from PIL import Image
 import time
 import io
+import os
 from numpy import asarray
 #import tflite_runtime.interpreter as tflite
 #ref: https://www.tensorflow.org/lite/guide/get_started https://www.tensorflow.org/lite/guide/inference#load_and_run_a_model_in_python
@@ -77,6 +78,7 @@ def testtfliteinference(tflite_model_path):
     output_details = interpreter.get_output_details()
     print("\noutput_details:")
     print(output_details)
+    print()
 
     # Test the model on random input data.
     input_shape = input_details[0]['shape']#[1, 180, 180, 3]
@@ -84,51 +86,65 @@ def testtfliteinference(tflite_model_path):
     floating_model = input_details[0]['dtype'] == np.float32
 
     #image_path='/home/lkk/Developer/MyRepo/MultiModalClassifier/tests/imgdata/sunflower.jpeg'
-    image_path='/Users/daijunq/Desktop/dee/github/MultiModalClassifier/tests/imgdata/sunflower.jpeg'
+    my_image_path='/Users/daijunq/Desktop/dee/github/MultiModalClassifier/tests/imgdata'
     img_height = input_shape[1] #180
     img_width = input_shape[2] #180
 
-    if floating_model:
-        input_data=loadimage(image_path, img_height, img_width)
-    else:
-        input_data=loadimageint(image_path, img_height, img_width)
-
-    tensor_index = input_details[0]['index']
-    interpreter.set_tensor(tensor_index, input_data)
-
-    tic = time.perf_counter()
-    interpreter.invoke()
-    toc = time.perf_counter()
-
-    # The function `get_tensor()` returns a copy of the tensor data.
-    # Use `tensor()` in order to get a pointer to the tensor.
-    output_data = interpreter.get_tensor(output_details[0]['index'])
-    print("\noutput_data:")
-    print(output_data)
-    output = np.squeeze(output_data) # or output_data[0]
-
-    # If the model is quantized (uint8 data), then dequantize the results
-    if output_details[0]['dtype'] == np.uint8:
-        scale, zero_point = output_details[0]['quantization']
-        output = scale * (output - zero_point)
-
-    classindex = np.argmax(output, axis=-1)
+    file_name = []
+    pred_result = []
     class_names = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
-    print("\nPredicted class:")
-    print(class_names[classindex])
-    print(f"\nfinish testing in {toc - tic:0.4f} seconds")
+    idx = 1
+
+    for image_name in os.listdir(my_image_path):   
+        # print(os.path.basename(image)) 
+        file_name.append(image_name)
+        image_path = my_image_path + "/" + image_name
+
+        if floating_model:
+            input_data=loadimage(image_path, img_height, img_width)
+        else:
+            input_data=loadimageint(image_path, img_height, img_width)
+
+        tensor_index = input_details[0]['index']
+        interpreter.set_tensor(tensor_index, input_data)
+
+        tic = time.perf_counter()
+        if idx == 1:
+            or_tic = tic 
+        interpreter.invoke()
+        toc = time.perf_counter()
+        print(f"Finish predict image {idx} in {toc - tic:0.4f} seconds")
+
+        # The function `get_tensor()` returns a copy of the tensor data.
+        # Use `tensor()` in order to get a pointer to the tensor.
+        output_data = interpreter.get_tensor(output_details[0]['index'])
+        # print("\noutput_data:")
+        # print(output_data)
+        output = np.squeeze(output_data) # or output_data[0]
+
+        # If the model is quantized (uint8 data), then dequantize the results
+        if output_details[0]['dtype'] == np.uint8:
+            scale, zero_point = output_details[0]['quantization']
+            output = scale * (output - zero_point)
+
+        predict_id = np.argmax(output, axis=-1)
+        pred_result.append(class_names[predict_id])
+        idx += 1
+    print("\nFinal prediction result is shown as below:\n")
+    print('\n'.join(f'file name: {f},  predict class: {p}' for f,p in zip(file_name, pred_result)))
+    print(f"\nTotal testing time: {toc - or_tic:0.4f} seconds")
 
 def loadimage(path, img_height, img_width):
     # load image
     image = Image.open(path).resize((img_width, img_height))
     image = np.array(image)
-    print("\nloadimage")
-    print(np.min(image), np.max(image))#0~255
+    # print("\nloadimage")
+    # print(np.min(image), np.max(image))#0~255
     input=image[np.newaxis, ...]
     input_data = np.array(input, dtype=np.float32)
     # normalize to the range 0-1
     input_data /= 255.0
-    print(np.min(input_data), np.max(input_data)) 
+    # print(np.min(input_data), np.max(input_data)) 
     return input_data
 
 def loadimageint(path, img_height, img_width):

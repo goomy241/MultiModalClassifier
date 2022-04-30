@@ -89,7 +89,7 @@ def to_tfrecord(tfrec_filewriter, img_bytes, label, height, width):
     }
     return tf.train.Example(features=tf.train.Features(feature=feature))
 
-def main(Path, PATH_OUTPUT='./outputs/TFrecord/', SHARDS = 16):
+def main(Path, PATH_OUTPUT='../outputs/TFrecord/', SHARDS = 16):
     #Path='/home/lkk/.keras/datasets/flower_photos'
     File_pattern = Path+'/*/*.jpg' #GCS_PATTERN = 'gs://flowers-public/*/*.jpg'
     AUTO = tf.data.experimental.AUTOTUNE # used in tf.data.Dataset API
@@ -146,5 +146,5 @@ def main(Path, PATH_OUTPUT='./outputs/TFrecord/', SHARDS = 16):
             print("Wrote file {} containing {} records".format(filename, shard_size))
 
 if __name__ == '__main__':
-    Path='/home/lkk/.keras/datasets/flower_photos'
+    Path='/Users/daijunq/.keras/datasets/flower_photos'
     main(Path)

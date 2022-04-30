@@ -72,8 +72,10 @@ def testtfliteinference(tflite_model_path):
 
     # Get input and output tensors.
     input_details = interpreter.get_input_details()
+    print("\ninput_details:")
     print(input_details)
     output_details = interpreter.get_output_details()
+    print("\noutput_details:")
     print(output_details)
 
     # Test the model on random input data.
@@ -82,7 +84,7 @@ def testtfliteinference(tflite_model_path):
     floating_model = input_details[0]['dtype'] == np.float32
 
     #image_path='/home/lkk/Developer/MyRepo/MultiModalClassifier/tests/imgdata/sunflower.jpeg'
-    image_path='/Users/daijunq/Desktop/dee/github/MultiModalClassifier/tests/imgdata/rose2.jpeg'
+    image_path='/Users/daijunq/Desktop/dee/github/MultiModalClassifier/tests/imgdata/sunflower.jpeg'
     img_height = input_shape[1] #180
     img_width = input_shape[2] #180
 
@@ -99,6 +101,7 @@ def testtfliteinference(tflite_model_path):
     # The function `get_tensor()` returns a copy of the tensor data.
     # Use `tensor()` in order to get a pointer to the tensor.
     output_data = interpreter.get_tensor(output_details[0]['index'])
+    print("\noutput_data:")
     print(output_data)
     output = np.squeeze(output_data) # or output_data[0]
 
@@ -109,12 +112,14 @@ def testtfliteinference(tflite_model_path):
 
     classindex = np.argmax(output, axis=-1)
     class_names = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
+    print("\nPredicted class:")
     print(class_names[classindex])
 
 def loadimage(path, img_height, img_width):
     # load image
     image = Image.open(path).resize((img_width, img_height))
     image = np.array(image)
+    print("\nloadimage")
     print(np.min(image), np.max(image))#0~255
     input=image[np.newaxis, ...]
     input_data = np.array(input, dtype=np.float32)
@@ -138,12 +143,11 @@ def loadimageint(path, img_height, img_width):
     return input_data
 
 if __name__ == '__main__':
-    saved_model_dir = '/Users/daijunq/Desktop/dee/github/MultiModalClassifier/outputs/flower_xceptionmodel1_0712'
-    testtfliteexport(saved_model_dir)
-    #tflitequanexport(saved_model_dir)
+    saved_model_dir = '/Users/daijunq/Desktop/dee/github/MultiModalClassifier/TFClassifier/outputs/flower_xceptionmodel1_0712/'
+    # testtfliteexport(saved_model_dir)
+    # tflitequanexport(saved_model_dir)
     #tflitequanintexport(saved_model_dir)
-
-    #testtfliteinference("converted_model_quant.tflite")#"converted_model.tflite"
+    testtfliteinference("/Users/daijunq/Desktop/dee/github/MultiModalClassifier/TFClassifier/converted_model.tflite")#"converted_model.tflite"
     # testtfliteinference("converted_model_quantint.tflite")
 
     

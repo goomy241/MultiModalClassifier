@@ -12,6 +12,7 @@ from TFClassifier.Datasetutil.TFdatasetutil import loadTFdataset #loadtfds, load
 from TFClassifier.myTFmodels.CNNsimplemodels import createCNNsimplemodel
 from TFClassifier.Datasetutil.Visutil import plot25images, plot9imagesfromtfdataset, plot_history
 from TFClassifier.myTFmodels.optimizer_factory import build_learning_rate, setupTensorboardWriterforLR
+from TFClassifier.exportTFlite import loadimage
 
 model = None 
 # import logger
@@ -169,5 +170,32 @@ def main():
     eval_loss, eval_acc = model.evaluate(val_ds)
     print('Eval loss: {}, Eval Accuracy: {}'.format(eval_loss, eval_acc))
 
+
+def testing():
+    load_path = '/Users/daijunq/Desktop/dee/github/MultiModalClassifier/TFClassifier/outputs/flower_xceptionmodel1_0712/'
+    reloaded = tf.keras.models.load_model(load_path)
+    reloaded.summary()
+    # reloaded_model = reloaded.signatures["serving_default"]
+
+    my_image_path = '/Users/daijunq/Desktop/dee/github/MultiModalClassifier/tests/imgdata/rose.jpeg'
+    from PIL import Image
+    image = Image.open(my_image_path).resize((180, 180))
+    imgplot = plt.imshow(image)
+    # plt.show()  
+
+    image = np.array(image)
+    image = np.array(image)/255.0
+    result = reloaded.predict(image[np.newaxis, ...])
+    # print(result)
+
+    predict_id = np.argmax(result[0], axis=-1)
+    print("\nPredicted id:") 
+    print(predict_id)
+
+    class_names = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
+    print("\nPredicted class:")
+    print(class_names[predict_id])
+
+
 if __name__ == '__main__':
-    main()
+    testing()

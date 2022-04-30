@@ -177,29 +177,43 @@ def testing():
     reloaded.summary()
     # reloaded_model = reloaded.signatures["serving_default"]
 
-    my_image_path = '/Users/daijunq/Desktop/dee/github/MultiModalClassifier/tests/imgdata/rose.jpeg'
+    my_image_path = '/Users/daijunq/Desktop/dee/github/MultiModalClassifier/tests/imgdata'
     from PIL import Image
-    image = Image.open(my_image_path).resize((180, 180))
-    imgplot = plt.imshow(image)
-    # plt.show()  
-
-    image = np.array(image)
-    image = np.array(image)/255.0
-
-    import time
-    tic = time.perf_counter()
-    result = reloaded.predict(image[np.newaxis, ...])
-    toc = time.perf_counter()
-    # print(result)
-
-    predict_id = np.argmax(result[0], axis=-1)
-    print("\nPredicted id:") 
-    print(predict_id)
-
+    file_name = []
+    pred_result = []
     class_names = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
-    print("\nPredicted class:")
-    print(class_names[predict_id])
-    print(f"\nfinish testing in {toc - tic:0.4f} seconds")
+
+    idx = 1
+# ref: https://stackoverflow.com/questions/33369832/read-multiple-images-on-a-folder-in-opencv-python
+    for image_name in os.listdir(my_image_path):   
+        # print(os.path.basename(image)) 
+        file_name.append(image_name)
+        image_p = my_image_path + "/" + image_name
+        # print(image_p)
+        
+        image = Image.open(image_p).resize((180, 180))
+        # imgplot = plt.imshow(image)
+        # plt.show()  
+
+        image = np.array(image)
+        image = np.array(image)/255.0
+
+        tic = time.perf_counter()
+        if idx == 1:
+            or_tic = tic 
+        pred = reloaded.predict(image[np.newaxis, ...])
+        toc = time.perf_counter()
+        
+        print(f"Finish predict image {idx} in {toc - tic:0.4f} seconds")
+
+        predict_id = np.argmax(pred[0], axis=-1)
+        pred_result.append(class_names[predict_id])
+        idx += 1
+
+    print("\nFinal prediction result is shown as below:\n")
+# ref: https://stackoverflow.com/questions/55290527/python-print-two-lists-with-string-format-operator
+    print('\n'.join(f'file name: {f},  predict class: {p}' for f,p in zip(file_name, pred_result)))
+    print(f"\nTotal testing time: {toc - or_tic:0.4f} seconds")
 
 
 if __name__ == '__main__':

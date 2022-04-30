@@ -96,7 +96,9 @@ def testtfliteinference(tflite_model_path):
     tensor_index = input_details[0]['index']
     interpreter.set_tensor(tensor_index, input_data)
 
+    tic = time.perf_counter()
     interpreter.invoke()
+    toc = time.perf_counter()
 
     # The function `get_tensor()` returns a copy of the tensor data.
     # Use `tensor()` in order to get a pointer to the tensor.
@@ -114,6 +116,7 @@ def testtfliteinference(tflite_model_path):
     class_names = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
     print("\nPredicted class:")
     print(class_names[classindex])
+    print(f"\nfinish testing in {toc - tic:0.4f} seconds")
 
 def loadimage(path, img_height, img_width):
     # load image

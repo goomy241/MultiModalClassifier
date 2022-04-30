@@ -185,7 +185,11 @@ def testing():
 
     image = np.array(image)
     image = np.array(image)/255.0
+
+    import time
+    tic = time.perf_counter()
     result = reloaded.predict(image[np.newaxis, ...])
+    toc = time.perf_counter()
     # print(result)
 
     predict_id = np.argmax(result[0], axis=-1)
@@ -195,6 +199,7 @@ def testing():
     class_names = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
     print("\nPredicted class:")
     print(class_names[predict_id])
+    print(f"\nfinish testing in {toc - tic:0.4f} seconds")
 
 
 if __name__ == '__main__':

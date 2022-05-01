@@ -215,6 +215,40 @@ def testing():
     print('\n'.join(f'file name: {f},  predict class: {p}' for f,p in zip(file_name, pred_result)))
     print(f"\nTotal testing time: {toc - or_tic:0.4f} seconds")
 
+    from tensorflow.keras.preprocessing import image
+    batch_size = len(file_name)
+    batched_input = np.zeros((batch_size, 180, 180, 3), dtype=np.float32)
+
+    from tensorflow.keras.applications.resnet50 import preprocess_input
+    for i in range(batch_size):
+        img_path = my_image_path + "/" + file_name[i]
+        # print(img_path)
+        img = image.load_img(img_path, target_size=(180, 180))
+        x = image.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        x = preprocess_input(x)
+        batched_input[i, :] = x
+    batched_input = tf.constant(batched_input)
+    print('-------------------------------------')
+    print('batched_input shape: ', batched_input.shape)
+
+    # Benchmarking throughput
+    N_warmup_run = 50
+    N_run = 1000
+    elapsed_time = []
+
+    for i in range(N_warmup_run):
+        preds = reloaded.predict(batched_input)
+
+    for i in range(N_run):
+        start_time = time.time()
+        preds = reloaded.predict(batched_input)
+        end_time = time.time()
+        elapsed_time = np.append(elapsed_time, end_time - start_time)
+        if i % 50 == 0:
+            print('Step {}: {:4.1f}ms'.format(i, (elapsed_time[-50:].mean()) * 1000))
+
+    print('Throughput: {:.0f} images/s'.format(N_run * batch_size / elapsed_time.sum()))
 
 if __name__ == '__main__':
     testing()

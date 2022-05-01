@@ -166,7 +166,7 @@ if __name__ == '__main__':
     # testtfliteexport(saved_model_dir)
     # tflitequanexport(saved_model_dir)
     #tflitequanintexport(saved_model_dir)
-    testtfliteinference("/Users/daijunq/Desktop/dee/github/MultiModalClassifier/TFClassifier/converted_model.tflite")#"converted_model.tflite"
+    testtfliteinference("/Users/daijunq/Desktop/dee/github/MultiModalClassifier/TFClassifier/converted_model_quant.tflite")#"converted_model.tflite"
     # testtfliteinference("converted_model_quantint.tflite")
 
     

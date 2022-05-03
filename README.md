@@ -1,7 +1,7 @@
-# MultiModalClassifier
+# MultiModalClassifier Lab Note
 ## Bonus Work Selection
-- Nvidia TensorRT inference
-  - Colab link: https://colab.research.google.com/drive/1TkzjiZShs75KbB9PL47DF4urAvrPdyQo?usp=sharing
+- Nvidia TensorRT inference & Serving with REST APIs
+  - Colab link: https://colab.research.google.com/drive/1u6huZHspRnaFopMcAyZO7r-MCSmgvuHy?usp=sharing
 - TensorflowLite inference
 
 ## Changes
@@ -40,10 +40,17 @@
 - 4.1 Testing result - local without GPU
 <img width="1439" alt="TFLite-testing-result" src="https://user-images.githubusercontent.com/90799662/166127607-3dcfc80e-1a1e-430c-bb15-d1d70900f8e7.png">
 
-- 4.2 Testing result - colab with GPU
-<img width="505" alt="TFLite-testing-result-GPU" src="https://user-images.githubusercontent.com/90799662/166127637-e769ba22-4c4f-4768-9f36-dc8217cdad73.png">
-
-## Conclusion
+**5. Conclusion**
 - By enabling the GPU, testing speed got hugely improved for the original model. 
 - The execution speed of TF-TRT optimized model is slightly better than the original one. 
 - TFLite model has better performance in a local environment without GPU, but it has a longer execution time when GPU is enabled.
+
+
+## Serving with REST APIs - Serve with TensorFlow Serving
+**1. Key Steps**
+- To serve with _TensorFlow Serving_, the saved model must have a version number, therefore I exported the original model again to avoid HTTPS error.
+- To test local images, I defined several methods to preprocess images and create a dataset from image folder.
+- To send testing images, I defined a method which will save the images in JSON format and then send to server.
+
+**2. Respond**
+<img width="1089" alt="image" src="https://user-images.githubusercontent.com/90799662/166400845-05a3b9f4-9e03-4f1a-9c2c-ac79ef405f57.png">
